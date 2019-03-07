@@ -1,6 +1,8 @@
-[signal, header] = sload('ad4_Asynchronous_20192502152935.gdf');
+% Please change this loading part according to your operating system:D
 
-behavior = single(dlmread('ad4_Asynchronous_20192502152935.txt'));
+[signal, header] = sload('../data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.gdf');
+
+behavior = single(dlmread('../data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.txt'));
 
 num_channels = 16;
 eeg = signal(:, 1:num_channels);
