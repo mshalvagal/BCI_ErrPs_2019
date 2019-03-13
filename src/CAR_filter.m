@@ -1,3 +1,4 @@
+
 function filtered_signal = CAR_filter(signal)
     % signal is T * C in which T is the time length of the signal and C is
     % the number of the channels

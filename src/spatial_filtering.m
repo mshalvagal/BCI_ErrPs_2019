@@ -1,8 +1,21 @@
-function grand_average = spatial_filtering(signal)
-    % signal is T * C * N 
-    N = size(signal, 3);
-    for trial = 1:N
-        filtered_signal(:,:,trial) = CAR_filter(signal(:,:,trial));
+
+function filtered_signal = spatial_filtering(signal, type, varargin)
+    % signal is T * C
+    % We need to be careful about laplacian, because I read somewhere that
+    % it will change the units of the data! I will check this later!
+    if strcmp(type, 'CAR')
+        filtered_signal = CAR_filter(signal);
+    elseif strcmp(type, 'Laplacian')
+        % varargin should contain the chanlocs
+        X = extractfield(varargin{1}, 'X');
+        Y = extractfield(varargin{1}, 'Y');
+        Z = extractfield(varargin{1}, 'Z');
+        [surf_lap, ~, ~] = laplacian_perrinX(signal', X, Y, Z); 
+        filtered_signal = surf_lap';
+    elseif strcmp(type, 'DAWN')
+
+    elseif strcmp(type, 'CCN')
+
     end
-    grand_average = mean(filtered_signal, 3);
+   
 end

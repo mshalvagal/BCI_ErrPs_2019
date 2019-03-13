@@ -1,3 +1,4 @@
+
 [b, a] = butter(2, [1 10]/256);
 
 filteredEEGCorrTrials = filtfilt(b, a, eegCorrTrials);
