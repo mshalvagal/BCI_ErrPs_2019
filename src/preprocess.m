@@ -2,11 +2,11 @@
 clear all; clc;
 % Please change this loading part according to your operating system:D
 
-[signal, header] = sload('../data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.gdf');
+[signal, header] = sload('data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.gdf');
 
-behavior = single(dlmread('../data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.txt'));
+behavior = single(dlmread('data/ad4_20192502/ad4_Asynchronous_20192502152935/ad4_Asynchronous_20192502152935.txt'));
 
-load('../matlabFunctions/chanlocs16.mat');
+load('matlabFunctions/chanlocs16.mat');
 
 num_channels = 16;
 eeg = signal(:, 1:num_channels);
@@ -21,15 +21,14 @@ eog = signal(:, 17:19);
 
 % write the function for temporal filtering
 % I don't know the right order of filtering!temporal --> spatial or vice versa
-% temporal_filt_eeg = ...(eeg)
+temporal_filt_eeg = spectral_filtering(eeg, 2, 1, 10);
 
 spatial_filt_eeg = spatial_filtering(eeg, 'CAR');
 % spatial_filt_eeg = spatial_filtering(eeg, 'Laplacian', chanlocs16);
 
-% temporal_spatial_filt_eeg = spatial_filtering(temporal_filt_eeg, 'CAR');
+temporal_spatial_filt_eeg = spatial_filtering(temporal_filt_eeg, 'CAR');
 
-clean_eeg = spatial_filt_eeg;
-% clean_eeg = temporal_spatial_filt_eeg;
+clean_eeg = temporal_spatial_filt_eeg;
 
 %% Separate the trials
 
@@ -85,12 +84,4 @@ figure(2);
 [Errhandle, ErrZi, Errgrid, ErrXi, ErrYi] = topoplot(Err_grand_average(peak_time, :), chanlocs16);
 figure(3);
 [Corrhandle, CorrZi, Corrgrid, CorrXi, CorrYi] = topoplot(Corr_grand_average(peak_time, :), chanlocs16);
-
-
-
-
-
-
-
-
 
