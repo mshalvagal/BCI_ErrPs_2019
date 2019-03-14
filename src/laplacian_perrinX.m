@@ -1,4 +1,4 @@
-%LAPLACIAN_PERRINX   Compute surface Laplacian of EEG data.
+% LAPLACIAN_PERRINX   Compute surface Laplacian of EEG data.
 % [surf_lap,G,H] = laplacian_perrinX(data,x,y,z[,leg_order,smoothing]);
 % 
 % INPUTS    : 

@@ -1,4 +1,4 @@
-function [b] = filterEOG( eeg, eog)
+function [b] = filterEOG(eeg, eog)
     
     % We perform regression following the paper:
     % "[Sch�gl 2007] A fully automated correction method of EOG artifact in

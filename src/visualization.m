@@ -26,3 +26,12 @@ figure(2);
 [Errhandle, ErrZi, Errgrid, ErrXi, ErrYi] = topoplot(Err_grand_average(peak_time, :), chanlocs16);
 figure(3);
 [Corrhandle, CorrZi, Corrgrid, CorrXi, CorrYi] = topoplot(Corr_grand_average(peak_time, :), chanlocs16);
+
+%% EOG correction
+figure(4);
+plot(eeg_EOGcorrected(:,8));hold on;
+plot(eeg(:,8));
+
+
+
+

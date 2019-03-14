@@ -15,6 +15,9 @@ eog = signal(:, 17:19);
 
 %% EOG correction??
 
+b = filterEOG(eeg,eog);
+% if we want to use EOG corrected version, change eeg_EOGcorrected to eeg
+eeg_EOGcorrected = eeg - eog*b; 
 
 
 %% Temporal and spatial filtering
