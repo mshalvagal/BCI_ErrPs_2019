@@ -20,8 +20,8 @@ Err_cat = reshape(concate,[],size_concate(2)*size_concate(3));
 X = [Corr_cat,Err_cat];
  
 %Create the average array
-mean_corr = mean_per_channel(corr_trial);
-mean_err = mean_per_channel(err_trial);
+mean_corr = (mean_per_channel(corr_trial)).';
+mean_err = (mean_per_channel(err_trial)).';
  
 Y = [repmat(mean_corr,1,size_concatc(3)),repmat(mean_err,1,size_concate(3))]; % concatenation of the average
  

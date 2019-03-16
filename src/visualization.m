@@ -32,6 +32,16 @@ figure(4);
 plot(eeg_EOGcorrected(:,8));hold on;
 plot(eeg(:,8));
 
+%% CCA 
+figure(5);
+err_mean = mean(CCA_err,3);
+plot(err_mean(:,1));
+hold on;
+unfilt_mean = mean(ErrTrials,3);
+plot(unfilt_mean(:,1));
+legend('CCA filtered','unfiltered')
+
+
 
 
 

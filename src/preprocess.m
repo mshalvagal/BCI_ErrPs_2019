@@ -23,7 +23,8 @@ eeg_EOGcorrected = eeg - eog*b;
 %% Temporal and spatial filtering
 
 % write the function for temporal filtering
-% I don't know the right order of filtering!temporal --> spatial or vice versa
+% I don't know the right order of filtering!temporal --> spatial or vice
+% versa 
 temporal_filt_eeg = spectral_filtering(eeg, 2, 1, 10);
 
 spatial_filt_eeg = spatial_filtering(eeg, 'CAR');
@@ -31,8 +32,8 @@ spatial_filt_eeg = spatial_filtering(eeg, 'CAR');
 
 temporal_spatial_filt_eeg = spatial_filtering(temporal_filt_eeg, 'CAR');
 
-clean_eeg = temporal_spatial_filt_eeg;
-
+%clean_eeg = temporal_spatial_filt_eeg;
+clean_eeg = temporal_filt_eeg; % to use CCA as spatial 
 %% Separate the trials
 
 eggTrigger = signal(:, 33);
@@ -64,6 +65,6 @@ end
 
 
 %% CCA spatial filtering 
-
+[CCA_corr,CCA_err] = CCA(CorrTrials,ErrTrials);
 
 
