@@ -31,6 +31,7 @@ figure(3);
 figure(4);
 plot(eeg_EOGcorrected(:,8));hold on;
 plot(eeg(:,8));
+legend('corrected','non-corrected');
 
 %% CCA 
 figure(5);
