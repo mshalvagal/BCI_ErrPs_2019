@@ -27,7 +27,8 @@ end
 
 % I don't know what do we mean by peak because we have 16 channels!which
 % one?
-peak_time = 0.5 * header.SampleRate;
+% peak_time = 0.5 * header.SampleRate;
+[~, peak_time] = max(Err_grand_average(:,4));
 figure(2);
 [Errhandle, ErrZi, Errgrid, ErrXi, ErrYi] = topoplot(Err_grand_average(peak_time, :), chanlocs16);
 figure(3);
