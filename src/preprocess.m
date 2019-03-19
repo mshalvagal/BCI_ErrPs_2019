@@ -1,4 +1,4 @@
-%% Loading the data
+%% Loading pilot data
 clear all; clc;
 % Please change this loading part according to your operating system:D
 
@@ -12,6 +12,36 @@ num_channels = 16;
 eeg = signal(:, 1:num_channels);
 eog = signal(:, 17:19);
 
+%% Loading experimental data
+clear all; clc;
+
+dirinfo = dir('data/a8_20191103');
+
+signal = double.empty();
+behavior = double.empty();
+
+for i = 1:size(dirinfo)
+    
+    if contains(dirinfo(i).name, 'Online') | contains(dirinfo(i).name, 'calibration') | contains(dirinfo(i).name, '.')
+        continue
+    end
+    
+    path = [dirinfo(i).folder '/' dirinfo(i).name];
+    
+    [batch_signal, header] = sload([path '/' dirinfo(i).name '.gdf']);
+
+    batch_behavior = single(dlmread([path '/' dirinfo(i).name '.txt']));
+    
+    signal = [signal; batch_signal];
+    behavior = [behavior; batch_behavior];
+    
+end
+
+load('matlabFunctions/chanlocs16.mat');
+
+num_channels = 16;
+eeg = signal(:, 1:num_channels);
+eog = signal(:, 17:19);
 
 %% EOG correction??
 
