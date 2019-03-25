@@ -15,7 +15,7 @@ eog = signal(:, 17:19);
 %% Loading experimental data
 clear all; clc;
 
-dirinfo = dir('data/a8_20191103');
+dirinfo = dir('data/a7_20191103');
 
 signal = double.empty();
 behavior = double.empty();
