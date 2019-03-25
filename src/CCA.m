@@ -1,4 +1,4 @@
-function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial)
+function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial) % TODO : remove average to each channel (also normalize)
 % Using CCA to filter the signal   
 %  Input : epoch signal that already has been spectrally filtered for
 %           correct and erronous trials
@@ -9,8 +9,9 @@ function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial)
 %           dim : same as input
 %  denaoted by X and the average over all trials  denoted by Y 
 % therefore correcting mostly for noise (which is not part of the average) 
- 
-% First create a matrix concatenating all trials for each channel
+%Setting all signal to 0 mean 
+corr_trial = corrtrial
+% Create a matrix concatenating all trials for each channel
 concatc = permute(corr_trial,[2 1 3]);
 size_concatc = size(concatc);
 Corr_cat = reshape(concatc,[],size_concatc(2)*size_concatc(3)); % concatenation of the two class 
