@@ -17,9 +17,9 @@ for i = 1:num_channels
     plot(T, baseline_corrected_Err_grand_average(:, i));hold on;
     plot(T, baseline_corrected_Corr_grand_average(:, i));
     
-    fill([T fliplr(T)], [baseline_corrected_Err_grand_average(:, i)' + 0.2*baseline_corrected_Err_grand_std(:, i)' fliplr(baseline_corrected_Err_grand_average(:, i)' - 0.2*baseline_corrected_Err_grand_std(:, i)')], [.0 .0 .9], 'linestyle', 'none')
+    fill([T fliplr(T)], [baseline_corrected_Err_grand_average(:, i)' + 0.1*baseline_corrected_Err_grand_std(:, i)' fliplr(baseline_corrected_Err_grand_average(:, i)' - 0.1*baseline_corrected_Err_grand_std(:, i)')], [.0 .0 .9], 'linestyle', 'none')
     alpha(.25);
-    fill([T fliplr(T)], [baseline_corrected_Corr_grand_average(:, i)' + 0.2*baseline_corrected_Corr_grand_std(:, i)' fliplr(baseline_corrected_Corr_grand_average(:, i)' - 0.2*baseline_corrected_Corr_grand_std(:, i)')], [.9 .0 .0], 'linestyle', 'none')
+    fill([T fliplr(T)], [baseline_corrected_Corr_grand_average(:, i)' + 0.1*baseline_corrected_Corr_grand_std(:, i)' fliplr(baseline_corrected_Corr_grand_average(:, i)' - 0.1*baseline_corrected_Corr_grand_std(:, i)')], [.9 .0 .0], 'linestyle', 'none')
     alpha(.25);
     
     xlabel('Time[s]');ylabel('Amplitude[\mu V]');title(chanlocs16(i).labels);

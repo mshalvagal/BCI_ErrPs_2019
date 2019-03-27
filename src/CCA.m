@@ -30,12 +30,12 @@ Y = [repmat(mean_corr,1,size_concatc(3)),repmat(mean_err,1,size_concate(3))]; % 
 [W,~] = canoncorr(X',Y');
  
 % Applying the spatial filter for every trial 
-CCA_corr = zeros(size(corr_trial));
+CCA_corr = zeros(size(corr_trial, 1), size(W, 2), size(corr_trial, 3));
 for itrials = 1 : size_concatc(3)
     CCA_corr(:,:,itrials) = corr_trial(:,:,itrials) * W;
 end
  
-CCA_err = zeros(size(err_trial));
+CCA_err = zeros(size(err_trial, 1), size(W, 2), size(err_trial, 3));
 for itrials = 1 : size_concate(3)
     CCA_err(:,:,itrials) = err_trial(:,:,itrials) * W;
 end
