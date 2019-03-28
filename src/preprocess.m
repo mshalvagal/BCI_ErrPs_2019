@@ -1,4 +1,4 @@
-%% Loading the data
+%% Loading pilot data
 clear all; clc;
 % Please change this loading part according to your operating system:D
 
@@ -12,6 +12,36 @@ num_channels = 16;
 eeg = signal(:, 1:num_channels);
 eog = signal(:, 17:19);
 
+%% Loading experimental data
+clear all; clc;
+
+dirinfo = dir('data/a8_20191103');
+
+signal = double.empty();
+behavior = double.empty();
+
+for i = 1:size(dirinfo)
+    
+    if contains(dirinfo(i).name, 'Online') | contains(dirinfo(i).name, 'calibration') | contains(dirinfo(i).name, '.')
+        continue
+    end
+    
+    path = [dirinfo(i).folder '/' dirinfo(i).name];
+    
+    [batch_signal, header] = sload([path '/' dirinfo(i).name '.gdf']);
+
+    batch_behavior = single(dlmread([path '/' dirinfo(i).name '.txt']));
+    
+    signal = [signal; batch_signal];
+    behavior = [behavior; batch_behavior];
+    
+end
+
+load('matlabFunctions/chanlocs16.mat');
+
+num_channels = 16;
+eeg = signal(:, 1:num_channels);
+eog = signal(:, 17:19);
 
 %% EOG correction??
 
@@ -22,16 +52,16 @@ eeg_EOGcorrected = eeg - eog*b;
 
 %% Temporal and spatial filtering
 
-% write the function for temporal filtering
-% I don't know the right order of filtering!temporal --> spatial or vice versa
-temporal_filt_eeg = spectral_filtering(eeg, 2, 1, 10);
+temporal_filt_eeg = spectral_filtering(eeg, 2, 1, 10, 'butter');
+% temporal_filt_eeg = spectral_filtering(eeg, 64, 1, 10, 'fir');
 
 spatial_filt_eeg = spatial_filtering(eeg, 'CAR');
 % spatial_filt_eeg = spatial_filtering(eeg, 'Laplacian', chanlocs16);
 
 temporal_spatial_filt_eeg = spatial_filtering(temporal_filt_eeg, 'CAR');
 
-clean_eeg = temporal_spatial_filt_eeg;
+%clean_eeg = temporal_spatial_filt_eeg;
+clean_eeg = temporal_filt_eeg; % to use CCA as spatial 
 
 %% Separate the trials
 
@@ -64,6 +94,4 @@ end
 
 
 %% CCA spatial filtering 
-
-
-
+[CCA_corr,CCA_err] = CCA(CorrTrials,ErrTrials);
