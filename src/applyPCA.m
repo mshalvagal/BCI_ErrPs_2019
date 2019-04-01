@@ -1,4 +1,9 @@
 function varargout = applyPCA(trainData, expVar, testData)
+% Two versions of applyPCA: - 2 input (trainData, expVar), 1 output [trainFeatures]
+%                           - 3 input (trainData, expVar,testData), 2 output [trainFeatures,testFeatures]
+% expVar -> the explained variance percentage that you want to have
+% For trainData, testData -> rows are observations, columns are features.
+
 nOutputs = nargout;
 varargout = cell(1,nOutputs);
 if nargin==2
