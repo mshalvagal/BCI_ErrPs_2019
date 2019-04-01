@@ -1,4 +1,4 @@
-%% Feature extraction
+7%% Feature extraction
 featureVector=[];featuresExtracted=zeros(312,length(eegIdx));
 % eight fronto-central channels (Fz, FC1, FCz, FC2, C1, Cz, C2, and CPz)
 selected_channels=[1 3 4 5 8 9 10 14];
