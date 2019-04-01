@@ -9,8 +9,9 @@ function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial) % TODO : remove aver
 %           dim : same as input
 %  denaoted by X and the average over all trials  denoted by Y 
 % therefore correcting mostly for noise (which is not part of the average) 
+
 %Setting all signal to 0 mean 
-corr_trial = corr_trial-repmat(mean(corr_trial,1),size(corr_trial,1),1,1);
+%corr_trial = corr_trial-repmat(mean(corr_trial,1),size(corr_trial,1),1,1);
 % Create a matrix concatenating all trials for each channel
 concatc = permute(corr_trial,[2 1 3]);
 size_concatc = size(concatc);

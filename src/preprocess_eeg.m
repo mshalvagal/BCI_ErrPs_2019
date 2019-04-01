@@ -9,7 +9,7 @@ function [preprocessed_eeg, labels] = preprocess_eeg(dataset_path, varargin)
     p.addOptional('do_temporal_filter', true, @islogical);
     p.addOptional('temporal_filter_type', 'butter', @isstr);
     p.addOptional('temporal_filter_order', 2, @isstr);
-    p.addOptional('do_spatial_filter', true, @islogical);
+    p.addOptional('do_spatial_filter', false, @islogical);
     p.addOptional('spatial_filter_type', 'CAR', @isstr);
     p.addOptional('do_CCA', true, @islogical);
     parse(p,dataset_path,varargin{:});

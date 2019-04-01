@@ -6,6 +6,7 @@ function [featuresProcessed] = feature_extraction(temporal_spatial_filt_eeg,eegI
 % concatenated to form a vector of 312 features. The feature vectors of all
 % trials were normalized, and then decorrelated using PCA, retaining 95% of the explained variance.
 
+%% Feature extraction
 featureVector=[];featuresExtracted=zeros(312,length(eegIdx));
 % eight fronto-central channels (Fz, FC1, FCz, FC2, C1, Cz, C2, and CPz)
 selected_channels=[1 3 4 5 8 9 10 14];
