@@ -92,6 +92,7 @@ for idx = 1:length(errTrialsIdx)
     ErrTrials(:, :, idx) = clean_eeg(sampleTrial + eegIdx(errTrialsIdx(idx)), :); 
 end
 
-
+%% Feature Extraction
+[featuresProcessed] = feature_extraction(temporal_spatial_filt_eeg,eegIdx,header,95)
 %% CCA spatial filtering 
 [CCA_corr,CCA_err] = CCA(CorrTrials,ErrTrials);
