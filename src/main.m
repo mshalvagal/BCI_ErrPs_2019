@@ -11,4 +11,5 @@ for i = 1: 10
    preds = Mdl.predict(X_train(cp.test(i), :));
    scores = [scores, mean(y_train(cp.test(i), :) == preds)];
    disp(confusionmat(y_train(cp.test(i), :),preds));
+   disp(sum(y_train(cp.test(i), :)))
 end 
