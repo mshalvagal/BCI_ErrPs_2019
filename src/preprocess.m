@@ -92,6 +92,9 @@ for idx = 1:length(errTrialsIdx)
     ErrTrials(:, :, idx) = clean_eeg(sampleTrial + eegIdx(errTrialsIdx(idx)), :); 
 end
 
-
+%% Feature Extraction
+% don't give 100 to explained variance, it gives an error due to MATLAB
+% find function. Instead, give 99.9999.
+[featuresProcessed] = feature_extraction(temporal_spatial_filt_eeg,eegIdx,header,95);
 %% CCA spatial filtering 
 [CCA_corr,CCA_err] = CCA(CorrTrials,ErrTrials);
