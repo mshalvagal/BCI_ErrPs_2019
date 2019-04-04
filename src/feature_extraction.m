@@ -1,4 +1,4 @@
-function [featuresProcessed] = feature_extraction(CorrTrials,header,downSampleRate, expVarDesired)
+function [featuresProcessed] = feature_extraction(CorrTrials,ErrTrials,header,downSampleRate, expVarDesired)
 % [featuresProcessed] = extract_features(CorrTrials,header,downSampleRate,expVarDesired)
 %
 % This function takes epoch data as input
@@ -8,10 +8,11 @@ function [featuresProcessed] = feature_extraction(CorrTrials,header,downSampleRa
 
 %% Feature extraction
 featureVector=[];%featuresExtracted=zeros(312,length(eegIdx));
+signal=cat(3,CorrTrials,ErrTrials);
 % eight fronto-central channels (Fz, FC1, FCz, FC2, C1, Cz, C2, and CPz)
 selected_channels=[1 3 4 5 8 9 10 14];
-for idx=1:size(CorrTrials,3)
-    temp=CorrTrials(floor(0.7*header.SampleRate:1.3*header.SampleRate+1),selected_channels,idx); % selected 8 channels
+for idx=1:size(signal,3)
+    temp=signal(floor(0.7*header.SampleRate:1.3*header.SampleRate+1),selected_channels,idx); % selected 8 channels
     hz64=downsample(temp,header.SampleRate/downSampleRate); %512/64
     featureVector=[];
     for j=1:length(selected_channels)
