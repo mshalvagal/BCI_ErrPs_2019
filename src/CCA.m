@@ -1,4 +1,4 @@
-function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial) % TODO : remove average to each channel (also normalize)
+function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial) 
 % Using CCA to filter the signal   
 %  Input : epoch signal that already has been spectrally filtered for
 %           correct and erronous trials
