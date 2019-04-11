@@ -1,5 +1,5 @@
-function [preprocessed_eeg, labels] = preprocess_eeg(dataset_path, varargin)
-
+function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varargin)
+% function [CorrTrials, ErrTrials, header] = preprocess_eeg(dataset_path, varargin)
     %% Parse input arguments
     p = inputParser;
 
@@ -11,7 +11,7 @@ function [preprocessed_eeg, labels] = preprocess_eeg(dataset_path, varargin)
     p.addOptional('temporal_filter_order', 2, @isstr);
     p.addOptional('do_spatial_filter', false, @islogical);
     p.addOptional('spatial_filter_type', 'CAR', @isstr);
-    p.addOptional('do_CCA', true, @islogical);
+    p.addOptional('do_CCA', false, @islogical);
     parse(p,dataset_path,varargin{:});
     
     training_set = p.Results.training_set;
@@ -114,7 +114,7 @@ function [preprocessed_eeg, labels] = preprocess_eeg(dataset_path, varargin)
     end
     
     %% Combine both classes to give training data
-    preprocessed_eeg = vertcat(permute(ErrTrials, [3, 2, 1]),  permute(CorrTrials, [3, 2, 1]));
+    preprocessed_eeg = cat(3, ErrTrials, CorrTrials); 
     labels = zeros(size(preprocessed_eeg,1),1);
     labels(1:size(errTrialsIdx, 1)) = 1;
 
