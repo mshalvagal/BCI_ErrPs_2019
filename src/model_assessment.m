@@ -4,7 +4,8 @@ function [confusion_matrices, percent_corrects] = model_assessment(Trials, Label
     
     N = size(Trials, 3);
     
-    cp = cvpartition(Labels, 'KFold', k, 'Stratify', true);
+%     cp = cvpartition(Labels, 'KFold', k, 'Stratify', true);
+    cp = cvpartition(N, 'KFold', k);
     
     for i=1:k
         train_set = Trials(:, : ,cp.training(i));
@@ -18,7 +19,12 @@ function [confusion_matrices, percent_corrects] = model_assessment(Trials, Label
         
 %         downSR = 64;
 %         expVarDesired = 95;
-        [train_X, test_X] = feature_extraction(train_set, test_set, SR, downSR, expVarDesired);
+%         [train_X, test_X] = feature_extraction(train_set, test_set, SR, downSR, expVarDesired);
+        
+        temp = permute(train_set, [3,2,1]);
+        train_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
+        temp = permute(test_set, [3,2,1]);
+        test_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
         
         if strcmp(model_type, 'LDA')
             Model = fitcdiscr(train_X, train_labels);
@@ -26,7 +32,7 @@ function [confusion_matrices, percent_corrects] = model_assessment(Trials, Label
         end
         
         percent_corrects(i) = mean(predictions == test_labels);
-        confusion_matrices(:, :, i) = confusionmat(train_labels, predictions);
+        confusion_matrices(:, :, i) = confusionmat(test_labels, predictions);
         
     end
         

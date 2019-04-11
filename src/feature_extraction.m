@@ -33,7 +33,7 @@ function [train_featuresProcessed, test_featuresProcessed] = feature_extraction(
         test_featuresExtracted(:,idx) = featureVector;
     end
 
-    [train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featureVector', expVarDesired, test_featureVector');
+    [train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired, test_featuresExtracted');
     
 %     [featuresProcessed] = applyPCA(featuresExtracted', expVarDesired); 
     

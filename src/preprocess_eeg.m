@@ -115,7 +115,7 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
     
     %% Combine both classes to give training data
     preprocessed_eeg = cat(3, ErrTrials, CorrTrials); 
-    labels = zeros(size(preprocessed_eeg,1),1);
+    labels = zeros(size(preprocessed_eeg, 3), 1);
     labels(1:size(errTrialsIdx, 1)) = 1;
 
 end
