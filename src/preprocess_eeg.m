@@ -108,14 +108,14 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
         ErrTrials(:, :, idx) = eeg(sampleTrial + eegIdx(errTrialsIdx(idx)), :); 
     end
 
-    %% CCA spatial filtering 
-    if do_CCA
-        [CorrTrials,ErrTrials] = CCA(CorrTrials,ErrTrials);
-    end
+%     %% CCA spatial filtering 
+%     if do_CCA
+%         [CorrTrials,ErrTrials] = CCA(CorrTrials,ErrTrials);
+%     end
     
     %% Combine both classes to give training data
     preprocessed_eeg = cat(3, ErrTrials, CorrTrials); 
     labels = zeros(size(preprocessed_eeg, 3), 1);
     labels(1:size(errTrialsIdx, 1)) = 1;
-
+    
 end

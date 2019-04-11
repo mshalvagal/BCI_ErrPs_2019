@@ -14,17 +14,17 @@ function [ filt_train, filt_test ] = CCA(train_set,train_labbel, test_set )
 corr_trial = train_set(:,:,find(train_labbel == 0)) ;
 err_trial = train_set(:,:,find(train_labbel == 1)) ;
 
-X = cat(3, err_trial, corr_trial);
-X = permute(X, [2, 1, 3]);
-X = reshape(X, [], size(X,2) * size(X,3));
-% % Create a matrix concatenating all trials for each channel
-% concatc = permute(corr_trial,[2 1 3]);
-% size_concatc = size(concatc);
-% Corr_cat = reshape(concatc,[],size_concatc(2)*size_concatc(3)); % concatenation of the two class 
-% concate = permute(err_trial,[2 1 3]);
-% size_concate = size(concate);
-% Err_cat = reshape(concate,[],size_concate(2)*size_concate(3));
-% X = [Corr_cat,Err_cat];
+% X = cat(3, corr_trial, err_trial);
+% X = permute(X, [2, 1, 3]);
+% X = reshape(X, [], size(X,2) * size(X,3));
+% Create a matrix concatenating all trials for each channel
+concatc = permute(corr_trial,[2 1 3]);
+size_concatc = size(concatc);
+Corr_cat = reshape(concatc,[],size_concatc(2)*size_concatc(3)); % concatenation of the two class 
+concate = permute(err_trial,[2 1 3]);
+size_concate = size(concate);
+Err_cat = reshape(concate,[],size_concate(2)*size_concate(3));
+X = [Corr_cat,Err_cat];
  
 %Create the average matrix 
 mean_corr = (mean_per_channel(corr_trial)).';

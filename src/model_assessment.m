@@ -19,12 +19,12 @@ function [confusion_matrices, percent_corrects] = model_assessment(Trials, Label
         
 %         downSR = 64;
 %         expVarDesired = 95;
-%         [train_X, test_X] = feature_extraction(train_set, test_set, SR, downSR, expVarDesired);
+        [train_X, test_X] = feature_extraction(train_set, test_set, SR, downSR, expVarDesired);
         
-        temp = permute(train_set, [3,2,1]);
-        train_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
-        temp = permute(test_set, [3,2,1]);
-        test_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
+%         temp = permute(train_set, [3,2,1]);
+%         train_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
+%         temp = permute(test_set, [3,2,1]);
+%         test_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
         
         if strcmp(model_type, 'LDA')
             Model = fitcdiscr(train_X, train_labels);
