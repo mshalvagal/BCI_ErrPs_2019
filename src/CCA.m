@@ -1,17 +1,19 @@
-function [ CCA_corr, CCA_err ] = CCA(corr_trial, err_trial) % TODO : remove average to each channel (also normalize)
+function [ filt_train, filt_test ] = CCA(train_set,train_labbel, test_set ) 
 % Using CCA to filter the signal   
-%  Input : epoch signal that already has been spectrally filtered for
-%           correct and erronous trials
-%          dim :T*M*K with T the time sample, M the channel and K the trial 
-%  Output : Filter signal. This signal has for each channel the maximum 
-%           correlation with the average over all trials of the same channel and is 
-%           uncorrelated to the average signal of the others channels (whitened)
-%           dim : same as input
-%  denaoted by X and the average over all trials  denoted by Y 
-% therefore correcting mostly for noise (which is not part of the average) 
+%  Input : - concatenated, epoched correct and erronous signal that already has been spectrally filtered 
+%          dim :T*M*K with T the time sample, M the channel and K the trials(correct + erroneous) 
+%          - Labbel of the train_set 
+%  Output : -CCA filtered train_set
+%           - CCA filtered test_set 
+%            dim : M*M
+% When this matrix is applied the resulting signal has for each channel the 
+% maximum correlation with the average over all trials of the same channel and is 
+% uncorrelated to the average signal of the others channels (whitened)
 
-%Setting all signal to 0 mean 
-%corr_trial = corr_trial-repmat(mean(corr_trial,1),size(corr_trial,1),1,1);
+% Separating the correct and error trials 
+corr_trial = train_set(:,:,find(train_labbel == 0)) ;
+err_trial = train_set(:,:,find(train_labbel == 1)) ;
+
 % Create a matrix concatenating all trials for each channel
 concatc = permute(corr_trial,[2 1 3]);
 size_concatc = size(concatc);
@@ -21,7 +23,7 @@ size_concate = size(concate);
 Err_cat = reshape(concate,[],size_concate(2)*size_concate(3));
 X = [Corr_cat,Err_cat];
  
-%Create the average array
+%Create the average matrix 
 mean_corr = (mean_per_channel(corr_trial)).';
 mean_err = (mean_per_channel(err_trial)).';
  
@@ -30,15 +32,16 @@ Y = [repmat(mean_corr,1,size_concatc(3)),repmat(mean_err,1,size_concate(3))]; % 
 % performing the canonical correlation to get the spatial filter W
 [W,~] = canoncorr(X',Y');
  
-% Applying the spatial filter for every trial 
-CCA_corr = zeros(size(corr_trial, 1), size(W, 2), size(corr_trial, 3));
-for itrials = 1 : size_concatc(3)
-    CCA_corr(:,:,itrials) = corr_trial(:,:,itrials) * W;
+% Applying the spatial filter for every trial for the train and test set  
+filt_train = zeros(size(train_set, 1), size(W, 2), size(train_set, 3));
+for itrials = 1 : size(train_set, 3)
+    filt_train(:,:,itrials) = train_set(:,:,itrials) * W;
 end
  
-CCA_err = zeros(size(err_trial, 1), size(W, 2), size(err_trial, 3));
-for itrials = 1 : size_concate(3)
-    CCA_err(:,:,itrials) = err_trial(:,:,itrials) * W;
+filt_test = zeros(size(test_set, 1), size(W, 2), size(test_set, 3));
+for itrials = 1 : size(test_set, 3)
+    filt_test(:,:,itrials) = filt_test(:,:,itrials) * W;
 end
+
  
 end
