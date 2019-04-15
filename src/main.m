@@ -16,8 +16,11 @@ for i=1:num_folds
     train_labels = Labels(cp.training(i));
     test_labels = Labels(cp.test(i));
     
-    [confusion_matrix, percent_correct] = model_assessment(train_set, train_labels, test_set, test_labels, header.SampleRate, 'LDA', false, true, 64, 99);
+    [confusion_matrix, percent_correct, precision, recall, fmeasure] = model_assessment(train_set, train_labels, test_set, test_labels, header.SampleRate, 'LDA', false, true, 64, 99);
     
     accuracies(i) = percent_correct;
     confusion_matrices(:,:,i) = confusion_matrix;
+    precisions(i) = precision;
+    recalls(i) = recall;
+    fmeasures(i) = fmeasure;
 end
