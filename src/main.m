@@ -1,6 +1,6 @@
 %% Data loading
 
-[Trials, Labels, header] = preprocess_eeg('data/a7_20191103');
+[Trials, Labels, header] = preprocess_eeg('data/b3_20191503');
 % [X_test, y_test] = preprocess_eeg('data/b3_20191503', false);
 
 %% Model evaluation
