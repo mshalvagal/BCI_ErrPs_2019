@@ -1,35 +1,36 @@
 %% Data loading
+[raw_data, raw_calibration_data] = read_data('data/b4_20192603');
 
-[Trials, Labels, header] = preprocess_eeg('data/a7_20191103');
-% [X_test, y_test] = preprocess_eeg('data/b3_20191503', false);
-
-%% Model evaluation
-N = size(Trials, 3);
-num_folds = 5;
-
-cp = cvpartition(Labels, 'KFold', num_folds);
-%cp = cvpartition(N, 'KFold', num_folds);
-
-for i=1:num_folds
-    train_set = Trials(:, : ,cp.training(i));
-    test_set = Trials(:, :, cp.test(i));
-    train_labels = Labels(cp.training(i));
-    test_labels = Labels(cp.test(i));
-    
-    [confusion_matrix, percent_correct,metrics] = model_assessment(train_set, train_labels, test_set, test_labels, header.SampleRate, 'LDA', false, true, 64, 99);
-    
-    accuracies(i) = percent_correct;
-    confusion_matrices(:,:,i) = confusion_matrix;
-    vect_metrics(i) = metrics;
+%% Setting up preprocessing and training parameters
+PreprocessParams.do_eog_correction = true;
+if PreprocessParams.do_eog_correction
+    PreprocessParams.calibration_data = raw_calibration_data;
 end
-% get mean value of all metrics :
-mean_metrics.accuracy = mean(accuracies);
-mean_metrics.conf_matrix = mean(confusion_matrices,3);
-mean_metrics.mcc = nanmean([vect_metrics.mcc]);
-mean_metrics.tpr = nanmean([vect_metrics.tpr]);
-mean_metrics.fpr = nanmean([vect_metrics.fpr]);
-mean_metrics.auc = nanmean([vect_metrics.auc]);
-mean_metrics.precision = nanmean([vect_metrics.precision]);
-mean_metrics.recall = nanmean([vect_metrics.recall]);
-mean_metrics.fmeasure = nanmean([vect_metrics.fmeasure]);
+PreprocessParams.do_temporal_filter = true;
+PreprocessParams.temporal_filter_type = 'butter';
+PreprocessParams.temporal_filter_order = 2;
+PreprocessParams.do_spatial_filter = false;
+PreprocessParams.spatial_filter_type = 'CAR';
 
+ModelParams.model_type = 'LDA';
+ModelParams.do_CCA = false;
+ModelParams.do_PCA = true;
+ModelParams.SR = raw_data.header.SampleRate;
+ModelParams.downSR = 64;
+ModelParams.expVarDesired = 99;
+
+%% Preprocessing
+[preprocessed_data, b_eog] = preprocess_eeg(raw_data, PreprocessParams, false);
+PreprocessParams.b_eog = b_eog;
+
+Data = offline_epoching(preprocessed_data);
+
+%% Model evaluation (offline)
+num_folds = 5;
+cp = cvpartition(Data.labels, 'KFold', num_folds);
+mean_metrics = offline_evaluation(Data, ModelParams, cp);
+
+disp(mean_metrics.conf_matrix)
+
+%% Model evaluation (online)
+online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
