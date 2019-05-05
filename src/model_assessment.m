@@ -9,7 +9,7 @@ function [confusion_matrix, percent_correct, precision, recall, fmeasure] = mode
 %    downSR = 64;
 %    expVarDesired = 95;
     if do_PCA
-        [train_X, test_X] = feature_extraction(train_set, test_set, SR, downSR, expVarDesired);
+        [PCA, train_X, test_X] = feature_extraction(train_set, SR, downSR, expVarDesired, test_set);
     else
         temp = permute(train_set, [3,2,1]);
         train_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
