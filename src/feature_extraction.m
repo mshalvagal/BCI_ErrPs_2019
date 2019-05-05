@@ -1,4 +1,4 @@
-function [train_featuresProcessed, test_featuresProcessed] = feature_extraction(trainData, testData, SR, downSampleRate, expVarDesired)
+function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainData, SR, downSampleRate, expVarDesired, varargin)
     % [featuresProcessed] = extract_features(CorrTrials,header,downSampleRate,expVarDesired)
     %
     % This function takes epoch data as input
@@ -22,20 +22,24 @@ function [train_featuresProcessed, test_featuresProcessed] = feature_extraction(
         train_featuresExtracted(:,idx) = featureVector;
     end
     
-    test_featuresExtracted = [];
-    for idx=1:size(testData, 3)
-        temp = testData(floor(0.7*SR:1.3*SR+1), selected_channels, idx); % selected 8 channels
-        hz64 = downsample(temp, SR / downSampleRate); %512/64
-        featureVector = [];
-        for j=1:length(selected_channels)
-            featureVector = [featureVector; hz64(:,j)];
+    if nargin==5
+        testData = varargin{1};
+        test_featuresExtracted = [];
+        for idx=1:size(testData, 3)
+            temp = testData(floor(0.7*SR:1.3*SR+1), selected_channels, idx); % selected 8 channels
+            hz64 = downsample(temp, SR / downSampleRate); %512/64
+            featureVector = [];
+            for j=1:length(selected_channels)
+                featureVector = [featureVector; hz64(:,j)];
+            end
+            test_featuresExtracted(:,idx) = featureVector;
         end
-        test_featuresExtracted(:,idx) = featureVector;
-    end
 
-    [train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired, test_featuresExtracted');
-    
-%     [featuresProcessed] = applyPCA(featuresExtracted', expVarDesired); 
+        [PCA, train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired, test_featuresExtracted');
+        varargout{1} = test_featuresProcessed;
+    else
+        [PCA, train_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired); 
+    end
     
 
 end

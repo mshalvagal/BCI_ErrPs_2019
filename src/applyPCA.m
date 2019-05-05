@@ -12,15 +12,20 @@ function varargout = applyPCA(trainData, expVar, testData)
     %     Z = trainData - mean(trainData);
         [coeff, score, ~, ~, explained, mu] = pca(trainData);
         index = find(cumsum(explained)>=expVar);
-        varargout{1} = score(:,1:index(1));
+        PCA.PCs = coeff(:, 1:index(1));
+        PCA.mu = mu;
+        varargout{1} = PCA;
+        varargout{2} = score(:,1:index(1));
 
     elseif nargin==3
     %     [Z,mu,sigma] = zscore(trainData);
     %     Z = trainData - mean(trainData);
         [coeff, score, ~, ~, explained, mu] = pca(trainData);
         index = find(cumsum(explained)>=expVar);
-
-        varargout{1} = score(:, 1:index(1));
-        varargout{2} = (testData - repmat(mu, [size(testData, 1), 1])) * coeff(:, 1:index(1));
+        PCA.PCs = coeff(:, 1:index(1));
+        PCA.mu = mu;
+        varargout{1} = PCA;
+        varargout{2} = score(:, 1:index(1));
+        varargout{3} = (testData - repmat(mu, [size(testData, 1), 1])) * coeff(:, 1:index(1));
     end
 end

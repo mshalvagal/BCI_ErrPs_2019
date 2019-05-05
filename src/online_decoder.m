@@ -1,7 +1,6 @@
 function label = online_decoder(Signal, Model, Preprocess)
-    % eeg is a T*C matrix
     
-    eeg = Signal.eeg;
+    eeg = Signal.eeg;   % eeg is a T*C matrix
     eog = Signal.eog;
     SR = Signal.SampleRate;
     
@@ -52,7 +51,7 @@ function label = online_decoder(Signal, Model, Preprocess)
     if do_PCA
         feature_vector = online_feature_extraction(eeg, SR, downSampleRate, channels, PCA);
     else
-        feature_vector = eeg(:);
+        feature_vector = reshape(eeg(:), [1, length(eeg(:))]);
     end
  
 %% Decoding
