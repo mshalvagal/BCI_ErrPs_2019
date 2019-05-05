@@ -4,9 +4,7 @@ function [confusion_matrix, percent_correct, metrics ] = model_assessment(train_
     
    if do_CCA
         [train_set, test_set] = CCA(train_set, train_labels, test_set);
-    end
-    
-    
+   end
 
 %    downSR = 64;
 %    expVarDesired = 95;
@@ -26,5 +24,5 @@ function [confusion_matrix, percent_correct, metrics ] = model_assessment(train_
     end
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
-    metrics = p_metrics(confusion_matrix,train_labels,scores(:,1))
+    metrics = p_metrics(confusion_matrix,train_labels,scores(:,1));
 end
