@@ -2,9 +2,11 @@ function [confusion_matrix, percent_correct, metrics ] = model_assessment(train_
     % This functions gets the correct and error trials and performs 'k'-fold cross-validation 
     % on the 'model'
     
-    if do_CCA
+   if do_CCA
         [train_set, test_set] = CCA(train_set, train_labels, test_set);
     end
+    
+    
 
 %    downSR = 64;
 %    expVarDesired = 95;

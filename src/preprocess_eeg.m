@@ -4,14 +4,13 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
     p = inputParser;
 
     p.addRequired('datapath',@isstr);
+    p.addOptional('do_spatial_filter', false, @islogical);
+    p.addOptional('spatial_filter_type', 'CAR', @isstr);
     p.addOptional('training_set', true, @islogical);
     p.addOptional('do_eog_correction', true, @islogical);
     p.addOptional('do_temporal_filter', true, @islogical);
     p.addOptional('temporal_filter_type', 'butter', @isstr);
     p.addOptional('temporal_filter_order', 2, @isstr);
-    p.addOptional('do_spatial_filter', false, @islogical);
-    p.addOptional('spatial_filter_type', 'CAR', @isstr);
-    p.addOptional('do_CCA', false, @islogical);
     parse(p,dataset_path,varargin{:});
     
     training_set = p.Results.training_set;
@@ -21,7 +20,6 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
     temporal_filter_order = p.Results.temporal_filter_order;
     do_spatial_filter = p.Results.do_spatial_filter;
     spatial_filter_type = p.Results.spatial_filter_type;
-    do_CCA = p.Results.do_CCA;
 
     %% Read data
     dirinfo = dir(dataset_path);
@@ -75,7 +73,7 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
     end
 
     if do_spatial_filter
-        eeg = spatial_filtering(eeg, spatial_filter_type);
+        eeg = spatial_filtering(eeg, spatial_filter_type,chanlocs16);
         % eeg = spatial_filtering(eeg, 'Laplacian', chanlocs16);
     end
 
