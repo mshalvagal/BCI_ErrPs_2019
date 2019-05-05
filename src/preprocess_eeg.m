@@ -91,7 +91,7 @@ function [preprocessed_eeg, labels, header] = preprocess_eeg(dataset_path, varar
     magnitude = behavior(behavIdx, 3);
 
     corrTrialsIdx = find(magnitude==0);
-    errTrialsIdx = find(magnitude>0);
+    errTrialsIdx = find(abs(magnitude)>0);
 
     before_rot_onset = -0.5;
     after_rot_onset = 1;
