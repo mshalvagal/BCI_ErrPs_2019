@@ -1,4 +1,4 @@
-function [ filt_train, filt_test ] = CCA(train_set,train_labbel, test_set ) 
+function [ filt_train, filt_test,W ] = CCA(train_set,train_labbel, test_set ) 
 % Using CCA to filter the signal   
 %  Input : - concatenated, epoched correct and erronous signal that already has been spectrally filtered 
 %          dim :T*M*K with T the time sample, M the channel and K the trials(correct + erroneous) 
@@ -36,15 +36,19 @@ Y = [repmat(mean_corr, 1, size(corr_trial, 3)), repmat(mean_err, 1, size(err_tri
 [W,~] = canoncorr(X',Y');
  
 % Applying the spatial filter for every trial for the train and test set  
+avg_train = train_set - repmat(mean(train_set,1),size(train_set,1),1,1);
 filt_train = zeros(size(train_set, 1), size(W, 2), size(train_set, 3));
 for itrials = 1 : size(train_set, 3)
-    filt_train(:,:,itrials) = train_set(:,:,itrials) * W;
-end
- 
-filt_test = zeros(size(test_set, 1), size(W, 2), size(test_set, 3));
-for itrials = 1 : size(test_set, 3)
-    filt_test(:,:,itrials) = filt_test(:,:,itrials) * W;
+    %filt_train(:,:,itrials) = train_set(:,:,itrials) * W;
+    filt_train(:,:,itrials) = avg_train(:,:,itrials) * W;
 end
 
+% removing the average ? 
+removing_average = test_set - repmat(mean(test_set,1),size(test_set,1),1,1);
+filt_test = zeros(size(test_set, 1), size(W, 2), size(test_set, 3));
+for itrials = 1 : size(test_set, 3)
+    %filt_test(:,:,itrials) = test_set(:,:,itrials) * W;
+    filt_test(:,:,itrials) = removing_average(:,:,itrials) * W;
+end
  
 end

@@ -1,4 +1,4 @@
-function [confusion_matrix, percent_correct, precision, recall, fmeasure] = model_assessment(train_set, train_labels, test_set, test_labels, SR, model_type, do_CCA, do_PCA, downSR, expVarDesired)
+function [confusion_matrix, percent_correct, metrics ] = model_assessment(train_set, train_labels, test_set, test_labels, SR, model_type, do_CCA, do_PCA, downSR, expVarDesired)
     % This functions gets the correct and error trials and performs 'k'-fold cross-validation 
     % on the 'model'
     
@@ -20,13 +20,9 @@ function [confusion_matrix, percent_correct, precision, recall, fmeasure] = mode
     if strcmp(model_type, 'LDA')
         Model = fitcdiscr(train_X, train_labels);
         predictions = Model.predict(test_X);
+        [~, scores] = resubPredict(Model);
     end
-
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
-    
-    precision = confusion_matrix(2,2)/(confusion_matrix(2,2) + confusion_matrix(1,2));
-    recall = confusion_matrix(2,2)/(confusion_matrix(2,2) + confusion_matrix(2,1));
-    fmeasure = 2*precision*recall/(precision + recall);
-    
+    metrics = p_metrics(confusion_matrix,train_labels,scores(:,1))
 end
