@@ -1,5 +1,5 @@
 %% Data loading
-[raw_data, raw_calibration_data] = read_data('data/b4_20192603');
+[raw_data, raw_calibration_data] = read_data('data/b3_20191503');
 
 %% Setting up preprocessing and training parameters
 PreprocessParams.do_eog_correction = true;
@@ -33,4 +33,8 @@ mean_metrics = offline_evaluation(Data, ModelParams, cp);
 disp(mean_metrics.conf_matrix)
 
 %% Model evaluation (online)
-online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
+OnlineHyperParams.threshold = 0.2;
+OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms
+online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, OnlineHyperParams);
+
+

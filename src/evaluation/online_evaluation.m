@@ -1,4 +1,4 @@
-function mean_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp)
+function mean_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, HyperParams)
 %ONLINE_EVALUATION Summary of this function goes here
 %   Detailed explanation goes here
     num_channels = 16;
@@ -33,18 +33,24 @@ function mean_metrics = online_evaluation(Data, ModelParams, PreprocessParams, r
 
             start_ind = 1;
             k = 1;
+            labels = [];
             while start_ind + window_size < size(signal, 1)
                 end_ind = start_ind + window_size;
                 
                 Signal_windowed.signal = signal(start_ind:end_ind, :);
                 Signal_windowed.SampleRate = ModelParams.SR;
 
-                label(k) = online_decoder(Signal_windowed, PreprocessParams, ModelParams);
+                labels(k) = online_decoder(Signal_windowed, PreprocessParams, ModelParams);
                 
                 k = k + 1;
-                start_ind = end_ind + 1;
+                start_ind = start_ind + step_size;
             end
-        % TODO: Evaluate the online labels
+            % TODO: Evaluate the online labels
+            figure(i);
+            subplot(1,2,1);
+            plot(labels);title(test_labels(j));
+            subplot(1,2,2);
+            plot(movmean(labels, HyperParams.window));
         end
     end
 
