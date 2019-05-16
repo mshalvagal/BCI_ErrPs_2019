@@ -22,6 +22,28 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
         predictions = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
+    if strcmp(model_params.model_type, 'diag LDA')
+        Model = fitcdiscr(train_X, train_labels,'DiscrimType','diaglinear');
+        predictions = Model.predict(test_X);
+        [~, scores] = resubPredict(Model);
+    end
+    if strcmp(model_params.model_type, 'diag QDA')
+        Model = fitcdiscr(train_X, train_labels,'DiscrimType','diagquadratic');
+        predictions = Model.predict(test_X);
+        [~, scores] = resubPredict(Model);
+    end
+    if strcmp(model_params.model_type, 'SVM')
+        c=[0 0.769;1.47 0];
+        Model = fitcsvm(train_X, train_labels,'Cost',c);
+        predictions = Model.predict(test_X);
+        [~, scores] = resubPredict(Model);
+    end
+    if strcmp(model_params.model_type, 'RBF SVM')
+        c=[0 1;3.645 0];
+        Model = fitcsvm(train_X, train_labels,'KernelFunction','RBF','Cost',c);
+        predictions = Model.predict(test_X);
+        [~, scores] = resubPredict(Model);
+    end
     
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
