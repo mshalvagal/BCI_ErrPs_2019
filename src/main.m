@@ -33,7 +33,7 @@ mean_metrics = offline_evaluation(Data, ModelParams, cp);
 disp(mean_metrics.conf_matrix)
 
 %% Model evaluation (online)
-%online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
+online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
 OnlineHyperParams.threshold = 0.2;
 OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms
 online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, OnlineHyperParams);

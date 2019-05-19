@@ -33,18 +33,22 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
         [~, scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'SVM')
-        c=[0 0.769;1.47 0];
+        c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'Cost',c);
         predictions = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'RBF SVM')
-        c=[0 1;3.645 0];
+        c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'KernelFunction','RBF','Cost',c);
         predictions = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
-    
+    if strcmp(model_params.model_type, 'RF')
+    Model = TreeBagger(100,train_X,train_labels,'OOBPred','On','Method','classification');
+    predictions = str2num(cell2mat(Model.predict(test_X)));
+    scores = zeros(length(train_labels),2);
+    end 
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
     
