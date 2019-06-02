@@ -1,4 +1,4 @@
-function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainData, SR, downSampleRate, expVarDesired, varargin)
+function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainData, trainLabels, SR, downSampleRate, expVarDesired, varargin)
 % [featuresProcessed] = extract_features(CorrTrials,header,downSampleRate,expVarDesired)
 %
 % This function takes epoch data as input
@@ -9,7 +9,8 @@ function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainDat
 %% Feature extraction
 % featuresExtracted=zeros(312,length(eegIdx));
 % eight fronto-central channels (Fz, FC1, FCz, FC2, C1, Cz, C2, and CPz)
-selected_channels = [1 3 4 5 8 9 10 14];
+% selected_channels = [1 3 4 5 8 9 10 14];
+selected_channels = 1:16;
 
 train_featuresExtracted = [];
 PCA =[]; 
@@ -24,7 +25,7 @@ if expVarDesired ~= -1
         end
         train_featuresExtracted(:,idx) = featureVector;
     end
-    if nargin==5
+    if nargin==6
         testData = varargin{1};
         test_featuresExtracted = [];
         for idx=1:size(testData, 3)
@@ -52,7 +53,7 @@ else
         end
         train_featuresExtracted(:,idx) = featureVector;
     end
-    if nargin==5
+    if nargin==6
         testData = varargin{1};
         test_featuresExtracted = [];
         for idx=1:size(testData, 3)
@@ -66,12 +67,16 @@ else
         end
         
         %[PCA, train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired, test_featuresExtracted');
-        varargout{1} = test_featuresExtracted';
-        train_featuresProcessed = train_featuresExtracted';
+        [orderedInd, orderedPower] = rankfeat(train_featuresExtracted', trainLabels, 'fisher');
+        idx = find(orderedPower<0.01, 1, 'first');
+        
+        varargout{1} = test_featuresExtracted(orderedInd(1:idx),:)';
+        train_featuresProcessed = train_featuresExtracted(orderedInd(1:idx),:)';
     else
         %[PCA, train_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired);
-        train_featuresProcessed = train_featuresExtracted';
-        
+        [orderedInd, orderedPower] = rankfeat(train_featuresExtracted', trainLabels, 'fisher');
+        idx = find(orderedPower<0.01, 1, 'first');
+        train_featuresProcessed = train_featuresExtracted(orderedInd(1:idx),:)';
     end
 end
 end

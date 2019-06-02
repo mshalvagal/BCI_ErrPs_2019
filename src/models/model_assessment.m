@@ -8,14 +8,15 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
     end
 
     if model_params.do_PCA
-        [PCA, train_X, test_X] = feature_extraction(train_set, model_params.SR, model_params.downSR, model_params.expVarDesired, test_set);
+        [PCA, train_X, test_X] = feature_extraction(train_set, train_labels, model_params.SR, model_params.downSR, model_params.expVarDesired, test_set);
         classifier.PCA = PCA;
     else        
 %         temp = permute(train_set, [3,2,1]);
 %         train_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
 %         temp = permute(test_set, [3,2,1]);
 %         test_X = reshape(temp, size(temp, 1), size(temp, 2) * size(temp, 3));
-        [~, train_X, test_X] = feature_extraction(train_set, model_params.SR, model_params.downSR, model_params.expVarDesired, test_set);
+        model_params.expVarDesired = -1;
+        [~, train_X, test_X] = feature_extraction(train_set, train_labels, model_params.SR, model_params.downSR, model_params.expVarDesired, test_set);
     end
 
     if strcmp(model_params.model_type, 'LDA')
