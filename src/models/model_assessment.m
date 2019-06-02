@@ -19,30 +19,30 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
 
     if strcmp(model_params.model_type, 'LDA')
         Model = fitcdiscr(train_X, train_labels);
-        predictions = Model.predict(test_X);
+        [predictions, test_scores] = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'diag LDA')
         Model = fitcdiscr(train_X, train_labels,'DiscrimType','diaglinear');
-        predictions = Model.predict(test_X);
-        [~, scores] = resubPredict(Model);
+        [predictions, test_scores] = Model.predict(test_X);
+        [~, train_scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'diag QDA')
         Model = fitcdiscr(train_X, train_labels,'DiscrimType','diagquadratic');
-        predictions = Model.predict(test_X);
+        [predictions, test_scores] = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'SVM')
         c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'Cost',c);
-        predictions = Model.predict(test_X);
+        [predictions, test_scores] = Model.predict(test_X);
         [~, scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'RBF SVM')
         c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'KernelFunction','RBF','Cost',c);
-        predictions = Model.predict(test_X);
-        [~, scores] = resubPredict(Model);
+        [predictions, test_scores] = Model.predict(test_X);
+        [~, train_scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'RF')
     Model = TreeBagger(100,train_X,train_labels,'OOBPred','On','Method','classification');
@@ -52,7 +52,7 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
     
-    metrics = p_metrics(confusion_matrix,train_labels,scores(:,1));
+    metrics = p_metrics(confusion_matrix,test_labels,test_scores(:,2));
     metrics.accuracy = percent_correct;
     metrics.confusion_matrix = confusion_matrix;
     

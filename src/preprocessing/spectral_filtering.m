@@ -6,6 +6,6 @@ function filteredEEG = spectral_filtering(rawEEG, order, lowcut, highcut, type)
         filteredEEG = filtfilt(b, a, rawEEG);
     elseif strcmp(type, 'fir')
         b = fir1(48, [lowcut highcut]/256);
-        filteredEEG = filter(b, rawEEG);
+        filteredEEG = filter(b, 1, rawEEG);
     end
 end
