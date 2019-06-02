@@ -20,7 +20,7 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
     if strcmp(model_params.model_type, 'LDA')
         Model = fitcdiscr(train_X, train_labels);
         [predictions, test_scores] = Model.predict(test_X);
-        [~, scores] = resubPredict(Model);
+        [~, train_scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'diag LDA')
         Model = fitcdiscr(train_X, train_labels,'DiscrimType','diaglinear');
@@ -30,13 +30,13 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
     if strcmp(model_params.model_type, 'diag QDA')
         Model = fitcdiscr(train_X, train_labels,'DiscrimType','diagquadratic');
         [predictions, test_scores] = Model.predict(test_X);
-        [~, scores] = resubPredict(Model);
+        [~, train_scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'SVM')
         c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'Cost',c);
         [predictions, test_scores] = Model.predict(test_X);
-        [~, scores] = resubPredict(Model);
+        [~, train_scores] = resubPredict(Model);
     end
     if strcmp(model_params.model_type, 'RBF SVM')
         c=[0 1;2.17 0];
@@ -44,11 +44,6 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
         [predictions, test_scores] = Model.predict(test_X);
         [~, train_scores] = resubPredict(Model);
     end
-    if strcmp(model_params.model_type, 'RF')
-    Model = TreeBagger(100,train_X,train_labels,'OOBPred','On','Method','classification');
-    predictions = str2num(cell2mat(Model.predict(test_X)));
-    scores = zeros(length(train_labels),2);
-    end 
     percent_correct = mean(predictions == test_labels);
     confusion_matrix = confusionmat(test_labels, predictions);
     

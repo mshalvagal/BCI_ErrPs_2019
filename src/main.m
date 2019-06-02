@@ -22,21 +22,22 @@ ModelParams.downSR = 64;
 ModelParams.expVarDesired = 90;
 
 %% Preprocessing
+tic
 [preprocessed_data, b_eog] = preprocess_eeg(raw_data, PreprocessParams, false);
 PreprocessParams.b_eog = b_eog;
-
+time1 = toc;
 Data = offline_epoching(preprocessed_data);
-
 %% Model evaluation (offline)
 num_folds = 10;
 cp = cvpartition(Data.labels, 'KFold', num_folds);
+tic
 mean_metrics = offline_evaluation(Data, ModelParams, cp);
 
 disp(mean_metrics.conf_matrix)
-
+time2 = toc;
 %% Model evaluation (online)
-online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
-OnlineHyperParams.threshold = 0.2;
-OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms
-online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, OnlineHyperParams);
+%online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
+%OnlineHyperParams.threshold = 0.2;
+%OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms
+%online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, OnlineHyperParams);
 

@@ -2,4 +2,6 @@
 *.m~
 *sopen.mat
 data/
+*.png
+*.fig
 
