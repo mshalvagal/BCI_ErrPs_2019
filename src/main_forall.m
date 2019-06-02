@@ -8,8 +8,8 @@ rawdata = [raw_data1,raw_data2,raw_data3,raw_data4];
 rawcalibrationdata = [raw_calibration_data1,raw_calibration_data2,raw_calibration_data3,raw_calibration_data4];
 
 %% Setting up preprocessing and training parameters
-models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM','RF'];
-for j = 1:6
+models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
+for j = 1:5
     model_type = models_type(j);
     for i = 1:4
         raw_data = rawdata(i);
@@ -22,11 +22,11 @@ for j = 1:6
         PreprocessParams.temporal_filter_type = 'butter';
         PreprocessParams.temporal_filter_order = 2;
         PreprocessParams.do_spatial_filter = false;
-        PreprocessParams.spatial_filter_type = 'CCA';
+        PreprocessParams.spatial_filter_type = 'CAR';
 
         ModelParams.model_type = model_type;
         ModelParams.do_CCA = true;
-        ModelParams.do_PCA = true;
+        ModelParams.do_PCA = false;
         ModelParams.SR = raw_data.header.SampleRate;
         ModelParams.downSR = 64;
         ModelParams.expVarDesired = 99;
@@ -38,7 +38,7 @@ for j = 1:6
         Data = offline_epoching(preprocessed_data);
 
         %% Model evaluation (offline)
-        num_folds = 5;
+        num_folds = 10;
         cp = cvpartition(Data.labels, 'KFold', num_folds);
         mean_metrics = offline_evaluation(Data, ModelParams, cp);
         all_metrics(i) = mean_metrics;
