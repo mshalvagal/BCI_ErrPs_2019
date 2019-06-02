@@ -9,8 +9,9 @@ rawdata = [raw_data1,raw_data2,raw_data3,raw_data4,raw_data5];
 rawcalibrationdata = [raw_calibration_data1,raw_calibration_data2,raw_calibration_data3,raw_calibration_data4,raw_calibration_data5];
 
 %% Setting up preprocessing and training parameters
-models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
-for j = 1:5
+% models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
+models_type = [string('diag LDA')];
+for j = 1:length(models_type)
     model_type = models_type(j);
     for i = 1:5
         raw_data = rawdata(i);
@@ -59,3 +60,5 @@ for j = 1:5
     overall_mean_metrics.fmeasure = [all_metrics.fmeasure];
     models_metrics(j) =  overall_mean_metrics;
 end 
+
+disp(overall_mean_metrics.mcc)
