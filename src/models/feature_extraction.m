@@ -1,4 +1,4 @@
-function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainData, SR, downSampleRate, expVarDesired, varargin)
+function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainData, SR, downSampleRate, expVarDesired, varargin,do_select=false)
     % [featuresProcessed] = extract_features(CorrTrials,header,downSampleRate,expVarDesired)
     %
     % This function takes epoch data as input
@@ -8,7 +8,9 @@ function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainDat
 
     %% Feature extraction
     % featuresExtracted=zeros(312,length(eegIdx));
-    selected_channels = chanselect()
+
+    selected_channels = chanselectdo(do_select)
+
     train_featuresExtracted = [];
     for idx=1:size(trainData, 3)
         temp = trainData(floor(0.7*SR:1.3*SR+1), selected_channels, idx); % selected 8 channels
