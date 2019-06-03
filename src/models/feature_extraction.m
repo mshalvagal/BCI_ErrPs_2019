@@ -8,9 +8,7 @@ function [PCA, train_featuresProcessed, varargout] = feature_extraction(trainDat
 
     %% Feature extraction
     % featuresExtracted=zeros(312,length(eegIdx));
-    % eight fronto-central channels (Fz, FC1, FCz, FC2, C1, Cz, C2, and CPz)
-    selected_channels = [1 3 4 5 8 9 10 14];
-    
+    selected_channels = chanselect()
     train_featuresExtracted = [];
     for idx=1:size(trainData, 3)
         temp = trainData(floor(0.7*SR:1.3*SR+1), selected_channels, idx); % selected 8 channels
