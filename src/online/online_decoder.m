@@ -20,12 +20,7 @@ function [sigmoid_dist, score, eeg, zf] = online_decoder(Signal, PreprocessParam
     
 %% Feature vector formation
     eeg = [Signal.already_preprocessed_part; preprocessed_data.signal(:, 1:num_channels)];
-    
-    if ModelParams.do_PCA
-        feature_vector = online_feature_extraction(eeg, ModelParams.SR, ModelParams.downSR, ModelParams.trained_classifier.PCA);
-    else
-        feature_vector = reshape(eeg(:), [1, length(eeg(:))]);
-    end
+    feature_vector = online_feature_extraction(eeg, ModelParams);
  
 %% Decoding
     [~, score, ~] = model.predict(feature_vector);

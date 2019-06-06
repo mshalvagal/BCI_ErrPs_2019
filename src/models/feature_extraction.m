@@ -66,17 +66,18 @@ else
             test_featuresExtracted(:,idx) = featureVector;
         end
         
-        %[PCA, train_featuresProcessed, test_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired, test_featuresExtracted');
         [orderedInd, orderedPower] = rankfeat(train_featuresExtracted', trainLabels, 'fisher');
         idx = find(orderedPower<0.01, 1, 'first');
         
         varargout{1} = test_featuresExtracted(orderedInd(1:idx),:)';
+        varargout{2} = orderedInd(1:idx);
         train_featuresProcessed = train_featuresExtracted(orderedInd(1:idx),:)';
     else
-        %[PCA, train_featuresProcessed] = applyPCA(train_featuresExtracted', expVarDesired);
         [orderedInd, orderedPower] = rankfeat(train_featuresExtracted', trainLabels, 'fisher');
         idx = find(orderedPower<0.01, 1, 'first');
         train_featuresProcessed = train_featuresExtracted(orderedInd(1:idx),:)';
+        varargout{1} = [];
+        varargout{2} = orderedInd(1:idx);
     end
 end
 end

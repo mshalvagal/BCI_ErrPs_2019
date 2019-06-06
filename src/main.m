@@ -16,7 +16,7 @@ PreprocessParams.do_spatial_filter = true;
 PreprocessParams.spatial_filter_type = 'Laplacian euclidean';
 
 ModelParams.model_type = 'diag LDA';
-ModelParams.do_CCA = false;
+ModelParams.do_CCA = true;
 ModelParams.do_PCA = false;
 ModelParams.SR = raw_data.header.SampleRate;
 ModelParams.downSR = 64;
@@ -32,11 +32,15 @@ cp = cvpartition(Data.labels, 'KFold', num_folds);
 mean_metrics = offline_evaluation(Data, ModelParams, cp);
 
 disp(mean_metrics.conf_matrix)
-%% Model evaluation (online)
+%% Tuning threshold for online decoding (WARNING: Takes very long) 
 [Data_Tune, Data_Test] = split_data(Data);
 [online_metrics, OnlineHyperParams] = tune_threshold(Data_Tune, ModelParams, PreprocessParams, raw_data);
-%online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
-%OnlineHyperParams.threshold = 0.2;
-%OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms
-%online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp, OnlineHyperParams);
 
+%% Model evaluation (online)
+% train the model on the whole training dataset
+[~, online_classifier] = model_assessment(Data_Tune.eeg_epoched, Data_Tune.labels, Data_Tune.eeg_epoched, Data_Tune.labels, ModelParams);
+ModelParams.trained_classifier = online_classifier;
+
+% test the model on untouched test data
+[online_final_metrics, Scores, Decoding_Times] = test_online_decoder(Data_Test, raw_data, ModelParams, PreprocessParams, OnlineHyperParams);
+save('diag_LDA.mat', 'online_final_metrics', 'online_metrics', 'OnlineHyperParams', 'Scores', 'test_inds', 'tuning_inds', 'Decoding_Times');
