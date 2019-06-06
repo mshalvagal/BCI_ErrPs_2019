@@ -1,11 +1,12 @@
 %% Data loading
+clear;clc;
 [raw_data, raw_calibration_data] = read_data('data/b4_20192603');
 
 %% Setting up preprocessing and training parameters
 PreprocessParams.do_eog_correction = true;
 if PreprocessParams.do_eog_correction
-    eog_corr_data.eeg = raw_data.signal(:,1:16);
-    eog_corr_data.eog = raw_data.signal(:,17:19);
+%     eog_corr_data.eeg = raw_data.signal(:,1:16);
+%     eog_corr_data.eog = raw_data.signal(:,17:19);
     PreprocessParams.calibration_data = raw_calibration_data;
 end
 PreprocessParams.do_temporal_filter = true;
@@ -36,6 +37,8 @@ mean_metrics = offline_evaluation(Data, ModelParams, cp);
 disp(mean_metrics.conf_matrix)
 time2 = toc;
 %% Model evaluation (online)
+[Data_Tune, Data_Test] = split_data(Data);
+[online_metrics, OnlineHyperParams] = tune_threshold(Data_Tune, ModelParams, PreprocessParams, raw_data);
 %online_metrics = online_evaluation(Data, ModelParams, PreprocessParams, raw_data, cp);
 %OnlineHyperParams.threshold = 0.2;
 %OnlineHyperParams.window = floor(80 * 10^-3 * ModelParams.SR) + 1;  % 30 ms

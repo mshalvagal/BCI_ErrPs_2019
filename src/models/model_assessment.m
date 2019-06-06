@@ -34,6 +34,11 @@ function [metrics, classifier] = model_assessment(train_set, train_labels, test_
         [predictions, test_scores] = Model.predict(test_X);
         [~, train_scores] = resubPredict(Model);
     end
+    if strcmp(model_params.model_type, 'QDA')
+        Model = fitcdiscr(train_X, train_labels,'DiscrimType','pseudoquadratic');
+        [predictions, test_scores] = Model.predict(test_X);
+        [~, train_scores] = resubPredict(Model);
+    end
     if strcmp(model_params.model_type, 'SVM')
         c=[0 1;2.17 0];
         Model = fitcsvm(train_X, train_labels,'Cost',c);

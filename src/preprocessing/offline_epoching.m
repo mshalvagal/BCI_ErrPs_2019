@@ -46,6 +46,6 @@ function [out_data] = offline_epoching(in_data)
     fullIdx = find(diff(eggTrigger)) + 1;
     out_data.fullIdxStart = fullIdx(eggTrigger(fullIdx) == 1);
     out_data.fullIdxEnd = fullIdx(eggTrigger(fullIdx) == 0)-1;
-
+    out_data.triggerOnset = eegIdx;
 end
 

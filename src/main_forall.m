@@ -10,7 +10,7 @@ rawcalibrationdata = [raw_calibration_data1,raw_calibration_data2,raw_calibratio
 
 %% Setting up preprocessing and training parameters
 % models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
-models_type = [string('diag LDA')];
+models_type = [string('QDA'), 'diag QDA', 'diag LDA'];
 for j = 1:length(models_type)
     model_type = models_type(j);
     for i = 1:5
@@ -61,4 +61,4 @@ for j = 1:length(models_type)
     models_metrics(j) =  overall_mean_metrics;
 end 
 
-disp(overall_mean_metrics.mcc)
+models_metrics.mcc
