@@ -4,14 +4,16 @@
 [raw_data2, raw_calibration_data2] = read_data('data/a8_20191103');
 [raw_data3, raw_calibration_data3] = read_data('data/b0_20191203');
 [raw_data4, raw_calibration_data4] = read_data('data/b3_20191503');
-rawdata = [raw_data1,raw_data2,raw_data3,raw_data4];
-rawcalibrationdata = [raw_calibration_data1,raw_calibration_data2,raw_calibration_data3,raw_calibration_data4];
+[raw_data5, raw_calibration_data5] = read_data('data/b4_20192603');
+rawdata = [raw_data1,raw_data2,raw_data3,raw_data4,raw_data5];
+rawcalibrationdata = [raw_calibration_data1,raw_calibration_data2,raw_calibration_data3,raw_calibration_data4,raw_calibration_data5];
 
 %% Setting up preprocessing and training parameters
-models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
-for j = 1:5
+% models_type = [string('LDA'),'diag LDA','diag QDA','SVM','RBF SVM'];
+models_type = [string('diag LDA')];
+for j = 1:length(models_type)
     model_type = models_type(j);
-    for i = 1:4
+    for i = 1:5
         raw_data = rawdata(i);
         raw_calibration_data = rawcalibrationdata(i);
         PreprocessParams.do_eog_correction = true;
@@ -58,3 +60,5 @@ for j = 1:5
     overall_mean_metrics.fmeasure = [all_metrics.fmeasure];
     models_metrics(j) =  overall_mean_metrics;
 end 
+
+disp(overall_mean_metrics.mcc)
