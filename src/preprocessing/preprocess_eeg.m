@@ -35,8 +35,7 @@ function [preprocessed_data, b_eog, varargout] = preprocess_eeg(raw_data, params
     end
 
     if params.do_spatial_filter
-        eeg = spatial_filtering(eeg, params.spatial_filter_type);
-        % eeg = spatial_filtering(eeg, 'Laplacian', chanlocs16);
+        eeg = spatial_filtering(eeg, params.spatial_filter_type,chanlocs16);
     end
     
     preprocessed_data = raw_data;

@@ -2,3 +2,4 @@
 addpath(genpath('matlabFunctions'));
 addpath(genpath('src'));
 addpath(genpath('data'));
+addpath(genpath('plot'));

@@ -4,13 +4,13 @@ before_rot_onset = -0.5;
 after_rot_onset = 1;
 
 % We need to add baseline correction either here or after grand average
-baseline_corrected_ErrTrials = baseline_correction(err_trial, 50);
-baseline_corrected_CorrTrials = baseline_correction(corr_trial, 50);
+baseline_corrected_ErrTrials = baseline_correction(ErrTrials, 50);
+baseline_corrected_CorrTrials = baseline_correction(CorrTrials, 50);
 
 [baseline_corrected_Err_grand_average, baseline_corrected_Err_grand_std] = mean_per_channel(baseline_corrected_ErrTrials);
 [baseline_corrected_Corr_grand_average, baseline_corrected_Corr_grand_std] = mean_per_channel(baseline_corrected_CorrTrials);
-Err_grand_average = mean_per_channel(err_trial);
-Corr_grand_average = mean_per_channel(corr_trial);
+Err_grand_average = mean_per_channel(ErrTrials);
+Corr_grand_average = mean_per_channel(CorrTrials);
 
 selected_channels = [1 3 4 5 8 9 10 14];
 
@@ -35,6 +35,7 @@ selected_channels = [1 3 4 5 8 9 10 14];
 % peak_time = 0.5 * header.SampleRate;
 [~, peak_time] = max(Err_grand_average(:,4));
 figure(2);
+% Do the topoplot on a mean 
 [Errhandle, ErrZi, Errgrid, ErrXi, ErrYi] = topoplot(Err_grand_average(peak_time, :), chanlocs16);
 figure(3);
 [Corrhandle, CorrZi, Corrgrid, CorrXi, CorrYi] = topoplot(Corr_grand_average(peak_time, :), chanlocs16);
