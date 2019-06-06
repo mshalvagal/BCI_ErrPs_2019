@@ -154,10 +154,10 @@ H.edge(2)=plot(x,uE,'-','color',edgeColor);
 delete(H.mainLine)
 H.mainLine=plot(x,y,lineProps{:},'LineWidth',3);
 
-
 if ~holdStatus, hold off, end
 
 
 if nargout==1
-    varargout{1}=H;
+    varargout{1}=H
+;
 end
