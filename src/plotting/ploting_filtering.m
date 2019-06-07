@@ -56,8 +56,10 @@ hold on;
 a2=shadedErrorBar([1:769],mean(Corr1,2),stdcorr,'-b',0.8);
 title('Without Filtering')
 legend([a1.mainLine,a2.mainLine],'Error Trial','Correct Trial')
-xlabel('Time[ms]')
+xlabel('Time[s]')
 ylabel('Amplitude[µV]')
+xticks([0:128:769])
+xticklabels([-0.5:0.25:1])
 
 subplot(2,1,2);
 [ Err2,Corr2, Data2 ] = get_plottable_sig( false,true, false,'',raw_data, raw_calibration_data,true);
@@ -68,9 +70,10 @@ hold on;
 b2 = shadedErrorBar([1:769],mean(Corr2,2),stdcorr,'-b',0.8);
 title('Butterworth and EOG correction')
 legend([b1.mainLine,b2.mainLine],'Error Trial','Correct Trial')
-xlabel('Time[ms]')
+xlabel('Time[s]')
 ylabel('Amplitude[µV]')
-
+xticks([0:128:769])
+xticklabels([-0.5:0.25:1])
 %% Pretty plotted spectral + temporal filtering results
 clear all
 %[raw_data, raw_calibration_data] = read_data('data/b0_20191203');
@@ -85,15 +88,34 @@ do_s_filt = false;
 [ Err_grand_average,Corr_grand_average, Data ] = get_plottable_sig( do_CCA,do_t_filt, do_s_filt,'',raw_data, raw_calibration_data,true);
 stderr = std(Err_grand_average,0,2)./sqrt(size(Data.labels(Data.labels == 1),1));
 stdcorr = std(Corr_grand_average,0,2)./sqrt(size(Data.labels(Data.labels == 0),1));
-err = shadedErrorBar([1:769],mean(Err_grand_average,2),stderr);
+err = shadedErrorBar([],mean(Err_grand_average,2),stderr);
 hold on;
-corr = shadedErrorBar([1:769],mean(Corr_grand_average,2),stdcorr,'-b',0.8);
-title('Result of filtering ')
-xlabel('Time[ms]')
+corr = shadedErrorBar([],mean(Corr_grand_average,2),stdcorr,'-b',0.8);
+title('Result of Filtering ')
+xlabel('Time[s]')
 ylabel('Amplitude[µV]')
-x = patch([200 800 800 200],[-0.2 -0.2 0.25 0.25],[0.67	0.75 0.8],'FaceAlpha',0.3,'EdgeColor','none');
-legend([err.mainLine,corr.mainLine,x],'Erroneous trial','Correct trial','Time Window for Feature Extraction')
-
+x = patch([356 665 665 356],[-0.2 -0.2 0.25 0.25],[0.67	0.75 0.8],'FaceAlpha',0.3,'EdgeColor','none');
+xticks([0:128:769])
+xticklabels([-0.5:0.25:1])
+%
+SR = 512;
+temp = Data.eeg_epoched(floor(0.7*SR:1.3*SR+1), :, :);
+hz64 = downsample(temp, SR / 64);
+data_size = size(hz64);
+X = reshape(hz64,data_size(1)*data_size(2),data_size(3));
+y = Data.labels;
+[orderedInd, orderedPower] = rankfeat(X.', y, 'fisher');
+selected_feature = orderedInd(1:20);
+for i = 1:size(selected_feature,2)
+    per_channel = mod(selected_feature(i),39);
+    if (per_channel == 0)
+        per_channel = 39;
+    end
+    ind = (per_channel-1)*8 + 358
+    meansig = mean(Err_grand_average,2);
+    feat = plot(ind,meansig(ind),'xm','MarkerSize',10)
+end
+legend([err.mainLine,corr.mainLine,x,feat],'Erroneous trial','Correct trial','Time Window for Feature Extraction','Top 20 Features')
 %% Check that their is no contaminated electrods 
 [raw_data1, raw_calibration_data1] = read_data('data/a7_20191103');
 [raw_data2, raw_calibration_data2] = read_data('data/a8_20191103');
