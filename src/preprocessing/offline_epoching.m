@@ -28,7 +28,7 @@ function [out_data] = offline_epoching(in_data)
 
     CorrTrials = zeros(length(sampleTrial), num_channels, length(corrTrialsIdx));
     ErrTrials = zeros(length(sampleTrial), num_channels, length(errTrialsIdx));
-
+    
     for idx = 1:length(corrTrialsIdx)
         CorrTrials(:, :, idx) = eeg(sampleTrial + eegIdx(corrTrialsIdx(idx)), :); 
     end
@@ -44,8 +44,10 @@ function [out_data] = offline_epoching(in_data)
     
     %% Also keep the eeg time series and trial indices for the online decoding
     fullIdx = find(diff(eggTrigger)) + 1;
-    out_data.fullIdxStart = fullIdx(eggTrigger(fullIdx) == 1);
-    out_data.fullIdxEnd = fullIdx(eggTrigger(fullIdx) == 0)-1;
+    fullIdxStart = fullIdx(eggTrigger(fullIdx) == 1);
+    out_data.fullIdxStart = fullIdxStart([errTrialsIdx;corrTrialsIdx]);
+    fullIdxEnd = fullIdx(eggTrigger(fullIdx) == 0)-1;
+    out_data.fullIdxEnd = fullIdxEnd([errTrialsIdx;corrTrialsIdx]);
     out_data.triggerOnset = eegIdx;
 end
 

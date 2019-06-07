@@ -32,6 +32,7 @@ cp = cvpartition(Data.labels, 'KFold', num_folds);
 mean_metrics = offline_evaluation(Data, ModelParams, cp);
 
 disp(mean_metrics.conf_matrix)
+disp(mean_metrics.mcc)
 %% Tuning threshold for online decoding (WARNING: Takes very long) 
 [Data_Tune, Data_Test] = split_data(Data);
 [online_metrics, OnlineHyperParams] = tune_threshold(Data_Tune, ModelParams, PreprocessParams, raw_data);
