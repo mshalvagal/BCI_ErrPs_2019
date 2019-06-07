@@ -48,6 +48,6 @@ function [out_data] = offline_epoching(in_data)
     out_data.fullIdxStart = fullIdxStart([errTrialsIdx;corrTrialsIdx]);
     fullIdxEnd = fullIdx(eggTrigger(fullIdx) == 0)-1;
     out_data.fullIdxEnd = fullIdxEnd([errTrialsIdx;corrTrialsIdx]);
-    out_data.triggerOnset = eegIdx;
+    out_data.triggerOnset = eegIdx([errTrialsIdx;corrTrialsIdx]);
 end
 
